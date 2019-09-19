@@ -19,18 +19,13 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <import resource="classpath:spring/component/nodeurisource/nodeurisource-random.xml"/>
-    <import resource="classpath:spring/component/botContext/botContext.xml"/>
     <import resource="classpath:/spring/component/atomproducer/atomproducer-mixed.xml"/>
 
-    <bean id="atomCreatorBot" class="won.bot.randomsimulator.impl.RandomSimulatorBot">
+    <bean id="atomCreatorBot" class="won.bot.randomsimulatorbot.impl.RandomSimulatorBot">
         <property name="taskScheduler" ref="taskScheduler"/>
         <property name="botContextWrapper" ref="botContextWrapper"/>
-        <!--<property name="atomProducer" ref="atomProducerFromMails" />-->
-        <!--<property name="atomProducer" ref="atomProducerFromTrig" />-->
         <property name="atomProducer" ref="atomProducerMixed"/>
         <property name="nodeURISource" ref="nodeUriSourceRandom"/>
-        <!-- expects a bean named "ownerProtocolAtomServiceClient" in the context -->
         <property name="wonMessageSender" ref="ownerProtocolAtomServiceClientJMSBased"/>
         <property name="trigger">
             <bean class="org.springframework.scheduling.support.PeriodicTrigger">
@@ -45,5 +40,9 @@
     <bean id="botContextWrapper" class="won.bot.framework.bot.context.BotContextWrapper">
         <constructor-arg name="botContext" ref="${botContext.impl}"/>
         <constructor-arg name="botName" value="${bot.name}"/>
+    </bean>
+
+    <bean id="nodeUriSourceRandom" class="won.bot.framework.component.nodeurisource.impl.RandomMultiNodeUriSource">
+        <property name="nodeURIs" value="#{'${won.node.uris}'.split(' ')}"/>
     </bean>
 </beans>
