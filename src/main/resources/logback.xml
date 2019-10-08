@@ -25,6 +25,7 @@
     </appender>
 
     <logger name="won.spoco" level="DEBUG"/>
+    <logger name="won.bot.framework.eventbot.action.impl.wonmessage" level="DEBUG" />
 
     <logger name="won.bot" level="DEBUG"/>
     <logger name="won.bot.framework.bot" level="DEBUG"/>
