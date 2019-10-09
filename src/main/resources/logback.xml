@@ -25,6 +25,7 @@
     </appender>
 
     <logger name="won.spoco" level="DEBUG"/>
+    <logger name="won.bot.framework.eventbot.action.impl.wonmessage" level="DEBUG" />
 
     <logger name="won.bot" level="DEBUG"/>
     <logger name="won.bot.framework.bot" level="DEBUG"/>
@@ -37,11 +38,10 @@
     <logger name="won.monitoring" level="INFO"/>
 
     <!-- START MSGTRACE: set the following to DEBUG to trace messages through the system (high level) -->
-    <logger name="won.node.protocol.impl.NeedProtocolNeedClient" level="INFO"/>
-    <logger name="won.node.protocol.impl.NeedProtocolNeedServiceImpl" level="INFO"/>
-    <logger name="won.node.protocol.impl.OwnerProtocolOwnerClient" level="INFO"/>
-    <logger name="won.owner.protocol.impl.OwnerProtocolNeedServiceClient" level="INFO"/>
-    <logger name="won.owner.messaging.OwnerProtocolOwnerServiceImpl" level="INFO"/>
+    <logger name="won.node.protocol.impl." level="INFO"/>
+    
+    <logger name="won.owner.protocol.impl" level="INFO"/>
+    <logger name="won.owner.messaging" level="INFO"/>
     <!-- END MSGTRACE -->
 
     <!-- SET to DEBUG to see bot events -->

@@ -1,0 +1,18 @@
+@prefix p0:    <https://node.matchat.org/won/resource/atom/mlroxk7jfy00#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix chat:  <https://w3id.org/won/ext/chat#> .
+@prefix won:   <https://w3id.org/won/core#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix atom:  <https://node.matchat.org/won/resource/atom/> .
+@prefix dc:    <http://purl.org/dc/elements/1.1/> .
+@prefix hold:  <https://w3id.org/won/ext/hold#> .
+
+atom:mlroxk7jfy00  a       won:Atom ;
+        dc:title           "Test Atom 2" ;
+        won:defaultSocket  p0:chatSocket ;
+        won:socket         p0:chatSocket , p0:holdableSocket .
+
+p0:chatSocket  won:socketDefinition  chat:ChatSocket .
+
+p0:holdableSocket  won:socketDefinition
+                hold:HoldableSocket .

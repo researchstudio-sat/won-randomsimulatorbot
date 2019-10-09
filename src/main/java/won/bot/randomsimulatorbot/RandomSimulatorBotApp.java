@@ -12,17 +12,23 @@ package won.bot.randomsimulatorbot;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.PropertySource;
+
 import won.bot.framework.bot.utils.BotUtils;
+import won.bot.randomsimulatorbot.impl.RandomSimulatorBot;
 
 
-@Component
+@SpringBootConfiguration
+@PropertySource("classpath:application.properties")
+@ImportResource("classpath:/spring/app/botApp.xml")
 public class RandomSimulatorBotApp implements CommandLineRunner {
     public static void main(String[] args) throws Exception {
         if (!BotUtils.isValidRunConfig()) {
             System.exit(1);
         }
-        SpringApplication app = new SpringApplication("classpath:/spring/app/botApp.xml");
+        SpringApplication app = new SpringApplication(RandomSimulatorBotApp.class);
         app.setWebEnvironment(false);
         app.run(args);
     }

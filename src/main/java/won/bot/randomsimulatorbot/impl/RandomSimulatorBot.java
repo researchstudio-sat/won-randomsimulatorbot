@@ -139,7 +139,7 @@ public class RandomSimulatorBot extends EventBot {
                         new RandomDelayedAction(ctx, MIN_RECATION_TIMEOUT_MILLIS, MAX_REACTION_TIMEOUT_MILLIS,
                                         (long) this.hashCode(),
                                         new ProbabilisticSelectionAction(ctx, PROB_MESSAGE_ON_MESSAGE,
-                                                        (long) this.hashCode(), new SendMessageAction(ctx),
+                                                        (long) this.hashCode(), new SendMessageAction(ctx, "Test message"),
                                                         new CloseConnectionAction(ctx, "Bye!"))));
         bus.subscribe(MessageFromOtherAtomEvent.class, replyer);
         bus.subscribe(OpenFromOtherAtomEvent.class, replyer);
