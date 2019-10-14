@@ -58,14 +58,14 @@ import won.bot.randomsimulatorbot.impl.action.ValidateConnectionAction;
  */
 public class RandomSimulatorBot extends EventBot {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private static final double PROB_OPEN_ON_HINT = 0.5;
-    private static final double PROB_MESSAGE_ON_OPEN = 0.7;
-    private static final double PROB_MESSAGE_ON_MESSAGE = 0.7;
+    private static final double PROB_OPEN_ON_HINT = 0.8;
+    private static final double PROB_MESSAGE_ON_OPEN = 0.8;
+    private static final double PROB_MESSAGE_ON_MESSAGE = 0.8;
     private static final double PROB_VALIDATE_ON_MESSAGE = 0.5;
-    private static final long MIN_RECATION_TIMEOUT_MILLIS = 5 * 1000;
-    private static final long MAX_REACTION_TIMEOUT_MILLIS = 15 * 1000;
-    private static final long MIN_NEXT_CREATION_TIMEOUT_MILLIS = 10 * 1000;
-    private static final long MAX_NEXT_CREATION_TIMEOUT_MILLIS = 15 * 1000;
+    private static final long MIN_RECATION_TIMEOUT_MILLIS = 2 * 1000;
+    private static final long MAX_REACTION_TIMEOUT_MILLIS = 5 * 1000;
+    private static final long MIN_NEXT_CREATION_TIMEOUT_MILLIS = 20 * 1000;
+    private static final long MAX_NEXT_CREATION_TIMEOUT_MILLIS = 35 * 1000;
     protected BaseEventListener groupMemberCreator;
     protected BaseEventListener workDoneSignaller;
 
@@ -121,7 +121,7 @@ public class RandomSimulatorBot extends EventBot {
         // another
         // one
         bus.subscribe(AtomCreatedEvent.class, new ActionOnEventListener(ctx, new RandomDelayedAction(ctx,
-                        MIN_NEXT_CREATION_TIMEOUT_MILLIS, MAX_NEXT_CREATION_TIMEOUT_MILLIS, this.hashCode(),
+                        MIN_NEXT_CREATION_TIMEOUT_MILLIS, MAX_NEXT_CREATION_TIMEOUT_MILLIS, System.currentTimeMillis(),
                         new CreateAtomWithSocketsAction(ctx, getBotContextWrapper().getAtomCreateListName()))));
         // print to console when we receive a message
         EventListener messagePrinter = new ActionOnEventListener(ctx, "message-printer",
@@ -131,19 +131,20 @@ public class RandomSimulatorBot extends EventBot {
         // when a hint is received, connect fraction of the cases after a random timeout
         bus.subscribe(AtomHintFromMatcherEvent.class, new ActionOnEventListener(ctx, "hint-reactor",
                         new RandomDelayedAction(ctx, MIN_RECATION_TIMEOUT_MILLIS, MAX_REACTION_TIMEOUT_MILLIS,
-                                        (long) this.hashCode(),
+                                        System.currentTimeMillis(),
                                         new MultipleActions(ctx, new SendFeedbackForHintAction(ctx),
                                                         new ProbabilisticSelectionAction(ctx, PROB_OPEN_ON_HINT,
-                                                                        (long) this.hashCode(),
+                                                                        System.currentTimeMillis(),
                                                                         new OpenConnectionAction(ctx, "Hi!"),
                                                                         new CloseConnectionAction(ctx, "Bye!"))))));
         // when an open or connect is received, send message or close randomly after a
         // random timeout
         EventListener opener = new ActionOnEventListener(ctx, "open-reactor",
                         new RandomDelayedAction(ctx, MIN_RECATION_TIMEOUT_MILLIS, MAX_REACTION_TIMEOUT_MILLIS,
-                                        (long) this.hashCode(),
+                                        System.currentTimeMillis(),
                                         new ProbabilisticSelectionAction(ctx, PROB_MESSAGE_ON_OPEN,
-                                                        (long) this.hashCode(), new OpenConnectionAction(ctx, "Hi!"),
+                                                        System.currentTimeMillis(),
+                                                        new OpenConnectionAction(ctx, "Hi!"),
                                                         new CloseConnectionAction(ctx, "Bye!"))));
         BotBehaviour behaviour = new ExecuteWonMessageCommandBehaviour(ctx);
         behaviour.activate();
@@ -153,16 +154,16 @@ public class RandomSimulatorBot extends EventBot {
         // timeout
         EventListener replyer = new ActionOnEventListener(ctx, "message-reactor",
                         new RandomDelayedAction(ctx, MIN_RECATION_TIMEOUT_MILLIS, MAX_REACTION_TIMEOUT_MILLIS,
-                                        (long) this.hashCode(),
+                                        System.currentTimeMillis(),
                                         new ProbabilisticSelectionAction(ctx, PROB_MESSAGE_ON_MESSAGE,
-                                                        (long) this.hashCode(),
+                                                        System.currentTimeMillis(),
                                                         new SendMessageAction(ctx, "Test message"),
                                                         new CloseConnectionAction(ctx, "Bye!"))));
         EventListener validator = new ActionOnEventListener(ctx, "connection-validator",
                         new RandomDelayedAction(ctx, MIN_RECATION_TIMEOUT_MILLIS, MAX_REACTION_TIMEOUT_MILLIS,
-                                        (long) this.hashCode(),
+                                        System.currentTimeMillis(),
                                         new ProbabilisticSelectionAction(ctx, PROB_VALIDATE_ON_MESSAGE,
-                                                        (long) this.hashCode(),
+                                                        System.currentTimeMillis(),
                                                         new ValidateConnectionAction(ctx),
                                                         new LogAction(ctx,
                                                                         "Not validating the connection at this time"))));
