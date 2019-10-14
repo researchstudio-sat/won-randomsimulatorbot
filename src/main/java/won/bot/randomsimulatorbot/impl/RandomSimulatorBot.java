@@ -64,7 +64,7 @@ public class RandomSimulatorBot extends EventBot {
     private static final double PROB_VALIDATE_ON_MESSAGE = 0.5;
     private static final long MIN_RECATION_TIMEOUT_MILLIS = 2 * 1000;
     private static final long MAX_REACTION_TIMEOUT_MILLIS = 5 * 1000;
-    private static final long MIN_NEXT_CREATION_TIMEOUT_MILLIS = 20 * 1000;
+    private static final long MIN_NEXT_CREATION_TIMEOUT_MILLIS = 15 * 1000;
     private static final long MAX_NEXT_CREATION_TIMEOUT_MILLIS = 35 * 1000;
     protected BaseEventListener groupMemberCreator;
     protected BaseEventListener workDoneSignaller;

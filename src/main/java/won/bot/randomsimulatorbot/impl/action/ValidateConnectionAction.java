@@ -48,34 +48,45 @@ public class ValidateConnectionAction extends BaseEventBotAction {
         crawlConnectionDataBehaviour.onResult(new BaseEventBotAction(getEventListenerContext()) {
             @Override
             protected void doRun(Event event, EventListener executingListener) throws Exception {
+                StringBuilder out = new StringBuilder();
                 if (event instanceof CrawlConnectionCommandSuccessEvent) {
                     CrawlConnectionCommandSuccessEvent successEvent = (CrawlConnectionCommandSuccessEvent) event;
                     try {
-                        System.out.println("Crawling took " + crawlStopWatch.getTotalTimeSeconds() + " seconds");
-                        System.out.println("Validating data of connection " + command.getConnectionURI());
+                        crawlStopWatch.stop();
+                        out.append("+---- Validation Result ----" + "\n");
+                        out.append("| Crawling took " + crawlStopWatch.getTotalTimeSeconds() + " seconds" + "\n");
+                        out.append("| Validating data of connection " + command.getConnectionURI() + "\n");
                         // TODO: use one validator for all invocations
                         WonConnectionValidator validator = new WonConnectionValidator();
                         StringBuilder message = new StringBuilder();
                         boolean valid = validator.validate(successEvent.getCrawledData(), message);
                         String successMessage = "Connection " + command.getConnectionURI() + " is valid: " + valid + " "
                                         + message.toString();
-                        System.out.println(successMessage);
+                        out.append("| " + successMessage + "\n");
                         // now validate again, but with the won-conversation tools, which are more
                         // thorough
-                        System.out.println("Checking with WonConversationUtils.getAgreementProtocolState() ...");
+                        out.append("| Checking with WonConversationUtils.getAgreementProtocolState() ..." + "\n");
                         AgreementProtocolState aps = WonConversationUtils.getAgreementProtocolState(
                                         command.getConnectionURI(), getEventListenerContext().getLinkedDataSource());
                         aps.getAgreements();
-                        System.out.println(
-                                        "Checking with WonConversationUtils.getAgreementProtocolState() did not throw an Exception");
-                        System.out.println("done validating " + command.getConnectionURI());
+                        out.append(
+                                        "| Checking with WonConversationUtils.getAgreementProtocolState() did not throw an Exception"
+                                                        + "\n");
+                        out.append("| done validating " + command.getConnectionURI() + "\n");
+                        out.append("+---------------------------" + "\n");
                     } catch (Exception e) {
-                        System.out.println("Caught exception during validation: " + e);
+                        out.append("| Caught exception during validation: " + e + "\n");
+                        out.append("+---------------------------" + "\n");
+                    } finally {
+                        System.out.println(out.toString());
                     }
                 } else if (event instanceof CrawlConnectionCommandFailureEvent) {
                     CrawlConnectionCommandFailureEvent failureEvent = (CrawlConnectionCommandFailureEvent) event;
-                    System.out.println("Cannot validate connection " + command.getConnectionURI()
-                                    + " - error while crawling: " + failureEvent.getMessage());
+                    out.append("+---- Validation Result ----" + "\n");
+                    out.append("| Cannot validate connection " + command.getConnectionURI()
+                                    + " - error while crawling: " + failureEvent.getMessage() + "\n");
+                    out.append("+---------------------------" + "\n");
+                    System.out.println(out.toString());
                 }
             }
         });
