@@ -1,6 +1,6 @@
 # won-randomsimulatorbot
 
-This Bot eternally creates new Atoms using TTL files in a specified folder as templates. If contacted with Hints or Connects, it randomly establishes some connections while denying others. It will, at random either respond to incoming messages in these connections or close them again. All its actions have a random delay within a few seconds.
+This Bot creates new Atoms using TTL files in a specified folder as templates. If contacted with Hints or Connects, it randomly establishes some connections while denying others. It will, at random either respond to incoming messages in these connections or close them again. All its actions have a random delay within a few seconds. After receiving a connection message it may choose to validate the connection data.
 
 ## Running the bot
 
