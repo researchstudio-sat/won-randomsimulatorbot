@@ -27,7 +27,7 @@
 			<bean
 				class="org.springframework.scheduling.support.PeriodicTrigger">
 				<constructor-arg name="period"
-					value="${atomCreatorBot.period}" />
+					value="10000" />
 				<constructor-arg name="timeUnit"
 					value="MILLISECONDS" />
 				<property name="initialDelay" value="10000" /> <!-- wait 10s at the beginning -->
