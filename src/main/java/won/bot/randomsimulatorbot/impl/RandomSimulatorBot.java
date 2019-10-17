@@ -45,6 +45,7 @@ import won.bot.framework.eventbot.event.impl.wonmessage.AtomHintFromMatcherEvent
 import won.bot.framework.eventbot.event.impl.wonmessage.ConnectFromOtherAtomEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.MessageFromOtherAtomEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.OpenFromOtherAtomEvent;
+import won.bot.framework.eventbot.event.impl.wonmessage.SocketHintFromMatcherEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.WonMessageReceivedOnConnectionEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.WonMessageSentOnConnectionEvent;
 import won.bot.framework.eventbot.listener.BaseEventListener;
@@ -129,7 +130,7 @@ public class RandomSimulatorBot extends EventBot {
         bus.subscribe(WonMessageReceivedOnConnectionEvent.class, messagePrinter);
         bus.subscribe(WonMessageSentOnConnectionEvent.class, messagePrinter);
         // when a hint is received, connect fraction of the cases after a random timeout
-        bus.subscribe(AtomHintFromMatcherEvent.class, new ActionOnEventListener(ctx, "hint-reactor",
+        EventListener hintReactor = new ActionOnEventListener(ctx, "hint-reactor",
                         new RandomDelayedAction(ctx, MIN_RECATION_TIMEOUT_MILLIS, MAX_REACTION_TIMEOUT_MILLIS,
                                         System.currentTimeMillis(),
                                         new MultipleActions(ctx, new SendFeedbackForHintAction(ctx),
@@ -137,7 +138,9 @@ public class RandomSimulatorBot extends EventBot {
                                                                         System.currentTimeMillis(),
                                                                         new OpenConnectionAction(ctx,
                                                                                         "Responding to hint!"),
-                                                                        new CloseConnectionAction(ctx, "Bye!"))))));
+                                                                        new CloseConnectionAction(ctx, "Bye!")))));
+        bus.subscribe(AtomHintFromMatcherEvent.class, hintReactor);
+        bus.subscribe(SocketHintFromMatcherEvent.class, hintReactor);
         // when an open or connect is received, send message or close randomly after a
         // random timeout
         EventListener opener = new ActionOnEventListener(ctx, "open-reactor",
