@@ -58,14 +58,14 @@ import won.bot.randomsimulatorbot.impl.action.ValidateConnectionAction;
  */
 public class RandomSimulatorBot extends EventBot {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private static final double PROB_OPEN_ON_HINT = 0.8;
-    private static final double PROB_MESSAGE_ON_OPEN = 0.8;
+    private static final double PROB_OPEN_ON_HINT = 1;
+    private static final double PROB_MESSAGE_ON_OPEN = 1;
     private static final double PROB_MESSAGE_ON_MESSAGE = 0.8;
     private static final double PROB_VALIDATE_ON_MESSAGE = 0.5;
-    private static final long MIN_RECATION_TIMEOUT_MILLIS = 2 * 1000;
-    private static final long MAX_REACTION_TIMEOUT_MILLIS = 5 * 1000;
-    private static final long MIN_NEXT_CREATION_TIMEOUT_MILLIS = 15 * 1000;
-    private static final long MAX_NEXT_CREATION_TIMEOUT_MILLIS = 35 * 1000;
+    private static final long MIN_RECATION_TIMEOUT_MILLIS = 0 * 1000;
+    private static final long MAX_REACTION_TIMEOUT_MILLIS = 0 * 1000;
+    private static final long MIN_NEXT_CREATION_TIMEOUT_MILLIS = 20 * 1000;
+    private static final long MAX_NEXT_CREATION_TIMEOUT_MILLIS = 30 * 1000;
     protected BaseEventListener groupMemberCreator;
     protected BaseEventListener workDoneSignaller;
 
@@ -135,7 +135,8 @@ public class RandomSimulatorBot extends EventBot {
                                         new MultipleActions(ctx, new SendFeedbackForHintAction(ctx),
                                                         new ProbabilisticSelectionAction(ctx, PROB_OPEN_ON_HINT,
                                                                         System.currentTimeMillis(),
-                                                                        new OpenConnectionAction(ctx, "Hi!"),
+                                                                        new OpenConnectionAction(ctx,
+                                                                                        "Responding to hint!"),
                                                                         new CloseConnectionAction(ctx, "Bye!"))))));
         // when an open or connect is received, send message or close randomly after a
         // random timeout
@@ -144,7 +145,7 @@ public class RandomSimulatorBot extends EventBot {
                                         System.currentTimeMillis(),
                                         new ProbabilisticSelectionAction(ctx, PROB_MESSAGE_ON_OPEN,
                                                         System.currentTimeMillis(),
-                                                        new OpenConnectionAction(ctx, "Hi!"),
+                                                        new OpenConnectionAction(ctx, "Responding to Connect/Open!"),
                                                         new CloseConnectionAction(ctx, "Bye!"))));
         BotBehaviour behaviour = new ExecuteWonMessageCommandBehaviour(ctx);
         behaviour.activate();
