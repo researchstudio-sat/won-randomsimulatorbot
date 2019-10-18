@@ -27,8 +27,8 @@
     <logger name="won.spoco" level="DEBUG"/>
     <logger name="won.bot.framework.eventbot.action.impl.wonmessage" level="DEBUG" />
 
-    <logger name="won.bot" level="DEBUG"/>
-    <logger name="won.bot.framework.bot" level="DEBUG"/>
+    <logger name="won.bot" level="INFO"/>
+    <logger name="won.bot.framework.bot" level="INFO"/>
     <logger name="won.bot.framework.manager.impl" level="DEBUG"/>
     <logger name="won.bot.framework.component.atomconsumer" level="DEBUG"/>
     <logger name="org.springframework.aop" level="INFO"/>
@@ -51,6 +51,10 @@
 
     <!-- SET to DEBUG to see more info about atom creation -->
     <logger name="won.bot.framework.component.atomproducer" level="INFO"/>
+
+	<!-- SET to DEBUG to log all incoming and outgoing wonMessages -->
+	<logger name="won.bot.framework.bot.base.EventBot" level="INFO" />
+
 
     <!-- Temporal -->
     <logger name="won.bot.impl.BAAtomicCCAdditionalParticipants" level="INFO" />

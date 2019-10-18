@@ -45,6 +45,7 @@ import won.bot.framework.eventbot.event.impl.wonmessage.AtomHintFromMatcherEvent
 import won.bot.framework.eventbot.event.impl.wonmessage.ConnectFromOtherAtomEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.MessageFromOtherAtomEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.OpenFromOtherAtomEvent;
+import won.bot.framework.eventbot.event.impl.wonmessage.SocketHintFromMatcherEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.WonMessageReceivedOnConnectionEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.WonMessageSentOnConnectionEvent;
 import won.bot.framework.eventbot.listener.BaseEventListener;
@@ -58,14 +59,14 @@ import won.bot.randomsimulatorbot.impl.action.ValidateConnectionAction;
  */
 public class RandomSimulatorBot extends EventBot {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private static final double PROB_OPEN_ON_HINT = 0.8;
-    private static final double PROB_MESSAGE_ON_OPEN = 0.8;
+    private static final double PROB_OPEN_ON_HINT = 1;
+    private static final double PROB_MESSAGE_ON_OPEN = 1;
     private static final double PROB_MESSAGE_ON_MESSAGE = 0.8;
     private static final double PROB_VALIDATE_ON_MESSAGE = 0.5;
-    private static final long MIN_RECATION_TIMEOUT_MILLIS = 2 * 1000;
-    private static final long MAX_REACTION_TIMEOUT_MILLIS = 5 * 1000;
-    private static final long MIN_NEXT_CREATION_TIMEOUT_MILLIS = 15 * 1000;
-    private static final long MAX_NEXT_CREATION_TIMEOUT_MILLIS = 35 * 1000;
+    private static final long MIN_RECATION_TIMEOUT_MILLIS = 0 * 1000;
+    private static final long MAX_REACTION_TIMEOUT_MILLIS = 0 * 1000;
+    private static final long MIN_NEXT_CREATION_TIMEOUT_MILLIS = 20 * 1000;
+    private static final long MAX_NEXT_CREATION_TIMEOUT_MILLIS = 30 * 1000;
     protected BaseEventListener groupMemberCreator;
     protected BaseEventListener workDoneSignaller;
 
@@ -129,14 +130,17 @@ public class RandomSimulatorBot extends EventBot {
         bus.subscribe(WonMessageReceivedOnConnectionEvent.class, messagePrinter);
         bus.subscribe(WonMessageSentOnConnectionEvent.class, messagePrinter);
         // when a hint is received, connect fraction of the cases after a random timeout
-        bus.subscribe(AtomHintFromMatcherEvent.class, new ActionOnEventListener(ctx, "hint-reactor",
+        EventListener hintReactor = new ActionOnEventListener(ctx, "hint-reactor",
                         new RandomDelayedAction(ctx, MIN_RECATION_TIMEOUT_MILLIS, MAX_REACTION_TIMEOUT_MILLIS,
                                         System.currentTimeMillis(),
                                         new MultipleActions(ctx, new SendFeedbackForHintAction(ctx),
                                                         new ProbabilisticSelectionAction(ctx, PROB_OPEN_ON_HINT,
                                                                         System.currentTimeMillis(),
-                                                                        new OpenConnectionAction(ctx, "Hi!"),
-                                                                        new CloseConnectionAction(ctx, "Bye!"))))));
+                                                                        new OpenConnectionAction(ctx,
+                                                                                        "Responding to hint!"),
+                                                                        new CloseConnectionAction(ctx, "Bye!")))));
+        bus.subscribe(AtomHintFromMatcherEvent.class, hintReactor);
+        bus.subscribe(SocketHintFromMatcherEvent.class, hintReactor);
         // when an open or connect is received, send message or close randomly after a
         // random timeout
         EventListener opener = new ActionOnEventListener(ctx, "open-reactor",
@@ -144,7 +148,7 @@ public class RandomSimulatorBot extends EventBot {
                                         System.currentTimeMillis(),
                                         new ProbabilisticSelectionAction(ctx, PROB_MESSAGE_ON_OPEN,
                                                         System.currentTimeMillis(),
-                                                        new OpenConnectionAction(ctx, "Hi!"),
+                                                        new OpenConnectionAction(ctx, "Responding to Connect/Open!"),
                                                         new CloseConnectionAction(ctx, "Bye!"))));
         BotBehaviour behaviour = new ExecuteWonMessageCommandBehaviour(ctx);
         behaviour.activate();
