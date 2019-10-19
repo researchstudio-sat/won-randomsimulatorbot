@@ -63,8 +63,13 @@ public class RandomSimulatorBot extends EventBot {
     private static final double PROB_MESSAGE_ON_OPEN = 1;
     private static final double PROB_MESSAGE_ON_MESSAGE = 0.8;
     private static final double PROB_VALIDATE_ON_MESSAGE = 0.5;
-    private static final long MIN_RECATION_TIMEOUT_MILLIS = 0 * 1000;
-    private static final long MAX_REACTION_TIMEOUT_MILLIS = 0 * 1000;
+    /**
+     * When sending a message, probability that it's 'propose' (getting some
+     * agreement action going if we're talking to a debugBot)
+     */
+    private static final double PROB_CMD_PROPOSE = 0.3;
+    private static final long MIN_RECATION_TIMEOUT_MILLIS = 1 * 1000;
+    private static final long MAX_REACTION_TIMEOUT_MILLIS = 1 * 1000;
     private static final long MIN_NEXT_CREATION_TIMEOUT_MILLIS = 20 * 1000;
     private static final long MAX_NEXT_CREATION_TIMEOUT_MILLIS = 30 * 1000;
     protected BaseEventListener groupMemberCreator;
@@ -161,7 +166,10 @@ public class RandomSimulatorBot extends EventBot {
                                         System.currentTimeMillis(),
                                         new ProbabilisticSelectionAction(ctx, PROB_MESSAGE_ON_MESSAGE,
                                                         System.currentTimeMillis(),
-                                                        new SendMessageAction(ctx, "Test message"),
+                                                        new ProbabilisticSelectionAction(ctx, PROB_CMD_PROPOSE,
+                                                                        System.currentTimeMillis(),
+                                                                        new SendMessageAction(ctx, "Test message"),
+                                                                        new SendMessageAction(ctx, "propose")),
                                                         new CloseConnectionAction(ctx, "Bye!"))));
         EventListener validator = new ActionOnEventListener(ctx, "connection-validator",
                         new RandomDelayedAction(ctx, MIN_RECATION_TIMEOUT_MILLIS, MAX_REACTION_TIMEOUT_MILLIS,
